@@ -15,8 +15,10 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,10 @@ public class SeatViewLayout extends LinearLayout {
 
     BitmapShader shader = null;
     private Bitmap circularBitmap;
+    private int seatWidth = 50;
+    private int seatHeight = 50;
+
+    private int seatRange = 60;
 
     List<Seat> seatList = new ArrayList<Seat>();
 
@@ -150,9 +156,9 @@ public class SeatViewLayout extends LinearLayout {
 
         if (zooming) {
             matrix.reset();
-            matrix.postScale(2f, 2f, zoomPos.x, zoomPos.y);
+            matrix.postScale(1.7f, 1.7f, zoomPos.x, zoomPos.y);
             shaderPaint.getShader().setLocalMatrix(matrix);
-            canvas.drawCircle(zoomPos.x, zoomPos.y, 200, shaderPaint);
+            canvas.drawCircle(zoomPos.x, zoomPos.y - 50, 250, shaderPaint);
         }
 
 
@@ -162,16 +168,25 @@ public class SeatViewLayout extends LinearLayout {
         LinearLayout row = null;
         ArrayList<Seat> seatsInRow = null;
         ImageView seatView = null;
-        LayoutParams params = new LayoutParams(50, 50);
+        LayoutParams params = new LayoutParams(seatWidth, seatHeight);
+        TextView rowNumber = null;
         params.setMargins(5, 5, 5, 5);
 
         for (int i = 0; i < rows; i++) {
             row = new LinearLayout(context);
             row.setOrientation(HORIZONTAL);
-            row.setWeightSum(columns);
-            row.setLayoutParams(new LinearLayout.LayoutParams(600, 60));
+            row.setWeightSum(columns + 1);
+            row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, seatHeight));
 
             for (int j = 0; j < columns; j++) {
+
+                if (j == 0) {
+                    rowNumber = new TextView(context);
+                    rowNumber.setText(String.valueOf(i + 1));
+                    rowNumber.setLayoutParams(params);
+                    row.addView(rowNumber);
+                }
+
                 seatView = new ImageView(context);
                 seatView.setLayoutParams(params);
                 seatView.setBackgroundColor(Color.TRANSPARENT);
@@ -241,7 +256,7 @@ public class SeatViewLayout extends LinearLayout {
 
         Log.d("touchhhhhhhhhhhhhhhh", "touch" + zoomPos.x + "," + zoomPos.y);
         matrix.reset();
-        matrix.postScale(2f, 2f);
+        matrix.postScale(1.5f, 1.5f);
         matrix.postTranslate(-zoomPos.x, -zoomPos.y);
         shader.setLocalMatrix(matrix);
 
@@ -254,7 +269,7 @@ public class SeatViewLayout extends LinearLayout {
                 zoomPos.x = event.getX();
                 zoomPos.y = event.getY();
 
-                if (numberOfSelectedSeats < 2) {
+                if (numberOfSelectedSeats < 3) {
                     zooming = true;
                 }
 
@@ -262,13 +277,13 @@ public class SeatViewLayout extends LinearLayout {
 
                     final View seat = allSeats.get(i);
 
-                    if (zoomPos.x > seatList.get(i).getColumn() * 60
-                            && zoomPos.x < ((seatList.get(i).getColumn() + 1) * 60 + (numberOfSelectedSeats * 60))
-                            && zoomPos.y > seatList.get(i).getRow() * 60
-                            && zoomPos.y < (seatList.get(i).getRow() + 1) * 60) {
+                    if (zoomPos.x > (seatList.get(i).getColumn() * seatRange)
+                            && zoomPos.x < ((seatList.get(i).getColumn() + 1) * 60 + (numberOfSelectedSeats * seatRange))
+                            && zoomPos.y > seatList.get(i).getRow() * seatRange
+                            && zoomPos.y < (seatList.get(i).getRow() + 1) * seatRange) {
 
                         if (seatList.get(i).getState() == Seat.HIRED_SEAT) {
-                            seat.setBackgroundResource(hiredSeatDrawableResource);
+                            seat.setBackgroundResource(R.drawable.error_seat);
                         } else {
                             seat.setBackgroundResource(selectedDrawableResource);
                             shader = new BitmapShader(getBitmapFromView(this), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);

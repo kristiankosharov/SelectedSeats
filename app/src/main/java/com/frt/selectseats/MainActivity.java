@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                if ((i == 3 && j == 3) || (i == 3 && j == 4)) {
+                if ((i == 3 && j == 3) || (i == 3 && j == 4) || (i == 7 && j == 4) || (i == 7 && j == 5) || (i == 7 && j == 6)) {
                     s.setState(Seat.HIRED_SEAT);
                 }
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         seatContainer.setBackgroundColor(Color.TRANSPARENT);
         seatContainer.setSeatDrawableResource(R.drawable.free_seat);
         seatContainer.setHiredSeatDrawableResource(R.drawable.hired_seat);
-        seatContainer.setNumberOfSelectedSeats(2);
+        seatContainer.setNumberOfSelectedSeats(6);
 
     }
 
