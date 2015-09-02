@@ -85,14 +85,60 @@
             android:layout_margin="20dp"
             android:src="@drawable/screen_image" />
 
+        <RelativeLayout
+            android:id="@+id/chooser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/screen_image"
+            android:layout_centerHorizontal="true">
+
+            <Button
+                android:id="@+id/button_up"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_marginBottom="5dp"
+                android:background="@drawable/triangle_up_shape" />
+
+            <Button
+                android:id="@+id/button_down"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_below="@+id/button_up"
+                android:background="@drawable/triangle_down_shape" />
+
+            <TextView
+                android:id="@+id/number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/button_down"
+                android:layout_alignTop="@+id/button_up"
+                android:layout_margin="20dp"
+                android:layout_toRightOf="@+id/button_up"
+                android:gravity="center"
+                android:text="1"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
 
         <com.frt.selectseats.SeatViewLayout
             android:id="@+id/rl_SeatContainer"
-            android:layout_width="300dp"
+            android:layout_width="340dp"
             android:layout_height="300dp"
-            android:layout_below="@+id/screen_image"
-            android:layout_centerInParent="true">
+            android:layout_below="@+id/chooser"
+            android:layout_centerInParent="true"
+            android:layout_marginTop="5dp"
+            android:gravity="center">
 
         </com.frt.selectseats.SeatViewLayout>
+
+        <Button
+            android:id="@+id/get_selected_seats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seats"
+            android:layout_below="@+id/rl_SeatContainer"
+            android:layout_centerHorizontal="true" />
+
     </RelativeLayout>
 </RelativeLayout>

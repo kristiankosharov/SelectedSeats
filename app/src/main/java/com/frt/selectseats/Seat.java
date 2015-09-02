@@ -16,6 +16,25 @@ public class Seat {
     int state;
     int position;
 
+    boolean isSelected;
+    boolean isOverHiredSeat;
+
+    public boolean isOverHiredSeat() {
+        return isOverHiredSeat;
+    }
+
+    public void setIsOverHiredSeat(boolean isOverHiredSeat) {
+        this.isOverHiredSeat = isOverHiredSeat;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
     public int getState() {
         return state;
     }
@@ -46,5 +65,13 @@ public class Seat {
 
     public void setPosition(int position) {
         this.position = position;
+    }
+
+    @Override
+    public String toString() {
+        return "Seat{" +
+                "row=" + (row + 1) +
+                ", column=" + (column + 1) +
+                '}';
     }
 }

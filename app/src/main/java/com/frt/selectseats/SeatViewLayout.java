@@ -13,6 +13,7 @@ import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.RectShape;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -158,10 +159,8 @@ public class SeatViewLayout extends LinearLayout {
             matrix.reset();
             matrix.postScale(1.7f, 1.7f, zoomPos.x, zoomPos.y);
             shaderPaint.getShader().setLocalMatrix(matrix);
-            canvas.drawCircle(zoomPos.x, zoomPos.y - 50, 250, shaderPaint);
+            canvas.drawCircle(zoomPos.x, zoomPos.y, 150, shaderPaint);
         }
-
-
     }
 
     private void addSeatViews() {
@@ -176,7 +175,9 @@ public class SeatViewLayout extends LinearLayout {
             row = new LinearLayout(context);
             row.setOrientation(HORIZONTAL);
             row.setWeightSum(columns + 1);
-            row.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, seatHeight));
+            row.setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, seatHeight));
+            row.setGravity(Gravity.CENTER);
+
 
             for (int j = 0; j < columns; j++) {
 
@@ -262,6 +263,8 @@ public class SeatViewLayout extends LinearLayout {
 
         int action = event.getAction();
 
+        Log.d(TAG, "Action: " + action);
+
         switch (action) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
@@ -282,14 +285,20 @@ public class SeatViewLayout extends LinearLayout {
                             && zoomPos.y > seatList.get(i).getRow() * seatRange
                             && zoomPos.y < (seatList.get(i).getRow() + 1) * seatRange) {
 
+                        seatList.get(i).setIsSelected(true);
+
                         if (seatList.get(i).getState() == Seat.HIRED_SEAT) {
                             seat.setBackgroundResource(R.drawable.error_seat);
+                            seatList.get(i).setIsOverHiredSeat(true);
                         } else {
                             seat.setBackgroundResource(selectedDrawableResource);
                             shader = new BitmapShader(getBitmapFromView(this), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+
+                            seatList.get(i).setIsOverHiredSeat(false);
                         }
 
                     } else {
+                        seatList.get(i).setIsSelected(false);
                         if (seatList.get(i).getState() == Seat.HIRED_SEAT) {
                             seat.setBackgroundResource(hiredSeatDrawableResource);
                         } else {
