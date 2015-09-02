@@ -5,6 +5,8 @@ public class Seat {
     public static final int INVISIBLE_SEAT = 0;
     public static final int FREE_SEAT = 1;
     public static final int HIRED_SEAT = 2;
+    public static final int CHILDREN_SEAT = 3;
+    public static final int INVALID_SEAT = 4;
 
     int row;
     int column;
@@ -13,6 +15,8 @@ public class Seat {
     // - 0 for invisible seat
     // - 1 free seats
     // - 2 hired seats
+    // - 3 children seats
+    // - 4 invalid seats
     int state;
     int position;
 

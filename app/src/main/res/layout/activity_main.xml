@@ -1,144 +1,177 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <RelativeLayout
-        android:id="@+id/top"
+    <com.frt.selectseats.CustomScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="20dp"
-            android:text="Title"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/title"
-            android:layout_below="@+id/title"
-            android:text="18.03.2015, 20:00" />
-
-        <TextView
-            android:id="@+id/place"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/title"
-            android:layout_below="@+id/date"
-            android:layout_marginTop="10dp"
-            android:text="ZALA 8"
-            android:textSize="12sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/row"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/title"
-            android:layout_below="@+id/place"
-            android:text="Row:" />
-
-        <TextView
-            android:id="@+id/row_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/place"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/row"
-            android:text="10" />
-
-        <TextView
-            android:id="@+id/seats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/place"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/row_number"
-            android:text="Seats:" />
-
-        <TextView
-            android:id="@+id/seats_number"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/place"
-            android:layout_marginLeft="5dp"
-            android:layout_toRightOf="@+id/seats"
-            android:text="20" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/top">
-
-        <ImageView
-            android:id="@+id/screen_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:src="@drawable/screen_image" />
+        android:layout_height="match_parent">
 
         <RelativeLayout
-            android:id="@+id/chooser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/screen_image"
-            android:layout_centerHorizontal="true">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <Button
-                android:id="@+id/button_up"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_marginBottom="5dp"
-                android:background="@drawable/triangle_up_shape" />
+            <ImageView
+                android:id="@+id/screen_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:src="@drawable/screen_image" />
 
-            <Button
-                android:id="@+id/button_down"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_below="@+id/button_up"
-                android:background="@drawable/triangle_down_shape" />
-
-            <TextView
-                android:id="@+id/number"
+            <RelativeLayout
+                android:id="@+id/chooser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/button_down"
-                android:layout_alignTop="@+id/button_up"
-                android:layout_margin="20dp"
-                android:layout_toRightOf="@+id/button_up"
-                android:gravity="center"
-                android:text="1"
-                android:textSize="30sp"
-                android:textStyle="bold" />
+                android:layout_below="@+id/screen_image"
+                android:layout_centerHorizontal="true">
+
+                <Button
+                    android:id="@+id/button_up"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="5dp"
+                    android:background="@drawable/triangle_up_shape" />
+
+                <Button
+                    android:id="@+id/button_down"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_below="@+id/button_up"
+                    android:background="@drawable/triangle_down_shape" />
+
+                <TextView
+                    android:id="@+id/number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/button_down"
+                    android:layout_alignTop="@+id/button_up"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/button_up"
+                    android:gravity="center"
+                    android:text="1"
+                    android:textSize="30sp"
+                    android:textStyle="bold" />
+
+                <CheckBox
+                    android:id="@+id/checkbox_child"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/button_down"
+                    android:layout_marginBottom="5dp"
+                    android:layout_marginTop="10dp"
+                    android:text="The ticket is for child." />
+
+                <CheckBox
+                    android:id="@+id/checkbox_invalid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/checkbox_child"
+                    android:layout_marginTop="5dp"
+                    android:text="The ticket is for invalid." />
+
+            </RelativeLayout>
+
+            <com.frt.selectseats.SeatViewLayout
+                android:id="@+id/rl_SeatContainer"
+                android:layout_width="330dp"
+                android:layout_height="300dp"
+                android:layout_below="@+id/chooser"
+                android:layout_centerInParent="true"
+                android:layout_marginTop="5dp"
+                android:gravity="center">
+
+            </com.frt.selectseats.SeatViewLayout>
+
+            <RelativeLayout
+                android:id="@+id/legend"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_SeatContainer"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/invalid_seat_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/invalid_seat_empty" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/invalid_seat_image"
+                    android:layout_alignTop="@+id/invalid_seat_image"
+                    android:layout_margin="5dp"
+                    android:layout_toRightOf="@+id/invalid_seat_image"
+                    android:gravity="center"
+                    android:text="Seat for invalid" />
+
+                <ImageView
+                    android:id="@+id/children_seat_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/invalid_seat_image"
+                    android:src="@drawable/children_seat_empty" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/children_seat_image"
+                    android:layout_alignTop="@+id/children_seat_image"
+                    android:layout_below="@+id/invalid_seat_image"
+                    android:layout_margin="5dp"
+                    android:layout_toRightOf="@+id/children_seat_image"
+                    android:gravity="center"
+                    android:text="Seat for children" />
+
+
+                <ImageView
+                    android:id="@+id/hired_seat_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/children_seat_image"
+                    android:src="@drawable/hired_seat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/hired_seat_image"
+                    android:layout_alignTop="@+id/hired_seat_image"
+                    android:layout_below="@+id/children_seat_image"
+                    android:layout_margin="5dp"
+                    android:layout_toRightOf="@+id/hired_seat_image"
+                    android:gravity="center"
+                    android:text="Hired seat" />
+
+                <ImageView
+                    android:id="@+id/free_seat_image"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/hired_seat_image"
+                    android:src="@drawable/free_seat" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/free_seat_image"
+                    android:layout_alignTop="@+id/free_seat_image"
+                    android:layout_below="@+id/hired_seat_image"
+                    android:layout_margin="5dp"
+                    android:layout_toRightOf="@+id/free_seat_image"
+                    android:gravity="center"
+                    android:text="Free seat" />
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/get_selected_seats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/legend"
+
+                android:layout_centerHorizontal="true"
+                android:text="Seats" />
 
         </RelativeLayout>
-
-        <com.frt.selectseats.SeatViewLayout
-            android:id="@+id/rl_SeatContainer"
-            android:layout_width="340dp"
-            android:layout_height="300dp"
-            android:layout_below="@+id/chooser"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="5dp"
-            android:gravity="center">
-
-        </com.frt.selectseats.SeatViewLayout>
-
-        <Button
-            android:id="@+id/get_selected_seats"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Seats"
-            android:layout_below="@+id/rl_SeatContainer"
-            android:layout_centerHorizontal="true" />
-
-    </RelativeLayout>
+    </com.frt.selectseats.CustomScrollView>
 </RelativeLayout>

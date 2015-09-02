@@ -6,8 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
+import com.oguzdev.circularfloatingactionmenu.library.FloatingActionMenu;
+import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
     private static final int NUMBERS_OF_ROWS = 10;
     private static final int NUMBER_OF_COLUMNS = 10;
     private Button selectedSeats;
+    private CheckBox checkBoxIsChild;
+    private CheckBox checkBoxIsInvalid;
+    private boolean isChild;
+    private boolean isInvalid;
+    private ImageView floatingActionButton;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +48,38 @@ public class MainActivity extends AppCompatActivity {
         numberOfSeats = (TextView) findViewById(R.id.number);
         numberOfSeats.setText(String.valueOf(number));
         selectedSeats = (Button) findViewById(R.id.get_selected_seats);
+        checkBoxIsChild = (CheckBox) findViewById(R.id.checkbox_child);
+        checkBoxIsInvalid = (CheckBox) findViewById(R.id.checkbox_invalid);
+
+        ImageView floatingActionButton = new ImageView(this);
+        floatingActionButton.setImageResource(R.drawable.settings);
+
+        FloatingActionButton actionButton = new FloatingActionButton.Builder(this).setContentView(floatingActionButton).setBackgroundDrawable(R.drawable.button_action_blue).setPosition(FloatingActionButton.POSITION_BOTTOM_RIGHT).build();
+
+//        FloatingActionButton.LayoutParams params = new FloatingActionButton.LayoutParams(FloatingActionButton.LayoutParams.WRAP_CONTENT, FloatingActionButton.LayoutParams.WRAP_CONTENT);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//        params.setMargins(10, 10, 10, 10);
+//
+//        actionButton.setLayoutParams(params);
+
+        SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
+        ImageView imageView1 = new ImageView(this);
+        ImageView imageView2 = new ImageView(this);
+        ImageView imageView3 = new ImageView(this);
+
+        imageView1.setImageDrawable(getResources().getDrawable(R.drawable.settings));
+        imageView2.setImageDrawable(getResources().getDrawable(R.drawable.settings));
+        imageView3.setImageDrawable(getResources().getDrawable(R.drawable.settings));
+
+
+        FloatingActionMenu actionMenu = new FloatingActionMenu.Builder(this)
+                .addSubActionView(itemBuilder.setContentView(imageView1).build())
+                .addSubActionView(itemBuilder.setContentView(imageView2).build())
+                .addSubActionView(itemBuilder.setContentView(imageView3).build())
+                .attachTo(actionButton)
+                .build();
+
 
         for (int i = 0; i < NUMBERS_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
@@ -53,6 +98,14 @@ public class MainActivity extends AppCompatActivity {
                     s.setState(Seat.HIRED_SEAT);
                 }
 
+                if ((i == 0 && j == 4) || (i == 0 && j == 5) || (i == 0 && j == 6)) {
+                    s.setState(Seat.INVALID_SEAT);
+                }
+
+                if (i == 1) {
+                    s.setState(Seat.CHILDREN_SEAT);
+                }
+
                 seatList.add(s);
             }
         }
@@ -67,6 +120,9 @@ public class MainActivity extends AppCompatActivity {
         seatContainer.setHiredSeatDrawableResource(R.drawable.hired_seat);
         seatContainer.setNumberOfSelectedSeats(number);
 
+        checkBoxIsInvalid.setChecked(false);
+        checkBoxIsInvalid.setChecked(false);
+
         arrowDown.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
                 number--;
                 numberOfSeats.setText(String.valueOf(number));
                 seatContainer.setNumberOfSelectedSeats(number);
-//                seatContainer.dispatchTouchEvent(MotionEvent.obtain(10, 10, MotionEvent.ACTION_MOVE, 450, 100, 0));
+                seatContainer.dispatchTouchEvent(MotionEvent.obtain(10, 10, MotionEvent.ACTION_MOVE, 450, 100, 0));
 
             }
         });
@@ -86,13 +142,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                if (number > NUMBER_OF_COLUMNS) {
+                if (number > NUMBER_OF_COLUMNS - 1) {
                     return;
                 }
                 number++;
                 numberOfSeats.setText(String.valueOf(number));
                 seatContainer.setNumberOfSelectedSeats(number);
-//                seatContainer.dispatchTouchEvent(MotionEvent.obtain(10, 10, MotionEvent.ACTION_MOVE, 450, 100, 0));
+                seatContainer.dispatchTouchEvent(MotionEvent.obtain(10, 10, MotionEvent.ACTION_MOVE, 450, 100, 0));
             }
         });
 
@@ -104,13 +160,37 @@ public class MainActivity extends AppCompatActivity {
                     if (seatList.get(i).isSelected()) {
                         selectedSeats.add(seatList.get(i));
                         if (seatList.get(i).isOverHiredSeat()) {
-                            Toast.makeText(MainActivity.this, "Ne stava bratched", Toast.LENGTH_LONG).show();
+                            Toast.makeText(MainActivity.this, "No way, some of seats were hired!", Toast.LENGTH_LONG).show();
                             return;
                         }
                     }
                 }
 
                 Toast.makeText(MainActivity.this, selectedSeats.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+
+        checkBoxIsChild.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isChild = true;
+                } else {
+                    isChild = false;
+                }
+                seatContainer.setIsForChildren(isChild);
+            }
+        });
+
+        checkBoxIsInvalid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    isInvalid = true;
+                } else {
+                    isInvalid = false;
+                }
+                seatContainer.setIsForInvalid(isInvalid);
             }
         });
     }

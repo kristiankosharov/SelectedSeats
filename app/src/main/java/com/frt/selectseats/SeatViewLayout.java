@@ -1,5 +1,6 @@
 package com.frt.selectseats;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
@@ -57,6 +58,8 @@ public class SeatViewLayout extends LinearLayout {
     boolean isFirst = true;
     boolean isFirstDraw = true;
     static final PointF zoomPos = new PointF(0, 0);
+    private boolean isForChildren;
+    private boolean isForInvalid;
 
     BitmapShader shader = null;
     private Bitmap circularBitmap;
@@ -64,6 +67,7 @@ public class SeatViewLayout extends LinearLayout {
     private int seatHeight = 50;
 
     private int seatRange = 60;
+    private float density;
 
     List<Seat> seatList = new ArrayList<Seat>();
 
@@ -76,15 +80,27 @@ public class SeatViewLayout extends LinearLayout {
 
     public SeatViewLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         this.setOrientation(VERTICAL);
         this.setWeightSum(rows);
+        density = context.getResources().getDisplayMetrics().density;
     }
 
     public SeatViewLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
         this.setOrientation(VERTICAL);
         this.setWeightSum(rows);
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        boolean isTablet = context.getResources().getBoolean(R.bool.is_tablet);
+        Log.d(TAG, String.valueOf(isTablet));
+        if (isTablet) {
+            setMeasuredDimension((int) (330 * density), (int) (300 * density));
+        } else {
+            setMeasuredDimension((int) (220 * density), (int) (200 * density));
+        }
     }
 
     public void setContext(Context context) {
@@ -147,6 +163,22 @@ public class SeatViewLayout extends LinearLayout {
         }
     }
 
+    public boolean isForChildren() {
+        return isForChildren;
+    }
+
+    public void setIsForChildren(boolean isForChildren) {
+        this.isForChildren = isForChildren;
+    }
+
+    public boolean isForInvalid() {
+        return isForInvalid;
+    }
+
+    public void setIsForInvalid(boolean isForInvalid) {
+        this.isForInvalid = isForInvalid;
+    }
+
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
@@ -157,9 +189,9 @@ public class SeatViewLayout extends LinearLayout {
 
         if (zooming) {
             matrix.reset();
-            matrix.postScale(1.7f, 1.7f, zoomPos.x, zoomPos.y);
+            matrix.postScale(1.7f, 1.7f, zoomPos.x + 170, zoomPos.y + 50);
             shaderPaint.getShader().setLocalMatrix(matrix);
-            canvas.drawCircle(zoomPos.x, zoomPos.y, 150, shaderPaint);
+            canvas.drawCircle(zoomPos.x - 50, zoomPos.y - 50, 150, shaderPaint);
         }
     }
 
@@ -213,6 +245,10 @@ public class SeatViewLayout extends LinearLayout {
                     if (hiredSeatDrawableResource != -1 && hiredSeatDrawableResource != 0) {
                         seatView.setBackgroundResource(hiredSeatDrawableResource);
                     }
+                } else if (seat.getState() == Seat.CHILDREN_SEAT) {
+                    seatView.setBackgroundResource(R.drawable.children_seat_empty);
+                } else if (seat.getState() == Seat.INVALID_SEAT) {
+                    seatView.setBackgroundResource(R.drawable.invalid_seat_empty);
                 } else {
                     seatView.setVisibility(View.INVISIBLE);
                 }
@@ -243,6 +279,12 @@ public class SeatViewLayout extends LinearLayout {
     public boolean onTouchEvent(MotionEvent event) {
         super.onTouchEvent(event);
 
+        View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
+
+        CustomScrollView scrollView = (CustomScrollView) rootView.findViewById(R.id.scroll_view);
+
+        scrollView.setIsScrollable(false);
+
         if (isFirst) {
             shader = new BitmapShader(getBitmapFromView(this), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
             isFirst = false;
@@ -257,7 +299,7 @@ public class SeatViewLayout extends LinearLayout {
 
         Log.d("touchhhhhhhhhhhhhhhh", "touch" + zoomPos.x + "," + zoomPos.y);
         matrix.reset();
-        matrix.postScale(1.5f, 1.5f);
+        matrix.postScale(1.7f, 1.7f);
         matrix.postTranslate(-zoomPos.x, -zoomPos.y);
         shader.setLocalMatrix(matrix);
 
@@ -269,8 +311,8 @@ public class SeatViewLayout extends LinearLayout {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_MOVE:
 
-                zoomPos.x = event.getX();
-                zoomPos.y = event.getY();
+                zoomPos.x = event.getX() - seatRange;
+                zoomPos.y = event.getY() - seatRange;
 
                 if (numberOfSelectedSeats < 3) {
                     zooming = true;
@@ -287,20 +329,26 @@ public class SeatViewLayout extends LinearLayout {
 
                         seatList.get(i).setIsSelected(true);
 
-                        if (seatList.get(i).getState() == Seat.HIRED_SEAT) {
+                        if (seatList.get(i).getState() == Seat.HIRED_SEAT ||
+                                (!isForChildren && seatList.get(i).getState() == Seat.CHILDREN_SEAT) ||
+                                (!isForInvalid && seatList.get(i).getState() == Seat.INVALID_SEAT)) {
+
                             seat.setBackgroundResource(R.drawable.error_seat);
                             seatList.get(i).setIsOverHiredSeat(true);
                         } else {
                             seat.setBackgroundResource(selectedDrawableResource);
-                            shader = new BitmapShader(getBitmapFromView(this), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-
                             seatList.get(i).setIsOverHiredSeat(false);
                         }
+                        shader = new BitmapShader(getBitmapFromView(this), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
 
                     } else {
                         seatList.get(i).setIsSelected(false);
                         if (seatList.get(i).getState() == Seat.HIRED_SEAT) {
                             seat.setBackgroundResource(hiredSeatDrawableResource);
+                        } else if (seatList.get(i).getState() == Seat.CHILDREN_SEAT) {
+                            seat.setBackgroundResource(R.drawable.children_seat_empty);
+                        } else if (seatList.get(i).getState() == Seat.INVALID_SEAT) {
+                            seat.setBackgroundResource(R.drawable.invalid_seat_empty);
                         } else {
                             seat.setBackgroundResource(seatDrawableResource);
                         }
@@ -312,6 +360,7 @@ public class SeatViewLayout extends LinearLayout {
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
                 zooming = false;
+                scrollView.setOnTouchListener(null);
                 this.invalidate();
                 break;
         }
