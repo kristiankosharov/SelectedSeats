@@ -356,6 +356,8 @@ public class SeatViewLayout extends LinearLayout {
                             seat.setBackgroundResource(R.drawable.children_seat_empty);
                         } else if (seatList.get(i).getState() == Seat.INVALID_SEAT) {
                             seat.setBackgroundResource(R.drawable.invalid_seat_empty);
+                        } else if (seatList.get(i).getState() == Seat.INVISIBLE_SEAT) {
+                            seat.setVisibility(View.INVISIBLE);
                         } else {
                             seat.setBackgroundResource(seatDrawableResource);
                         }

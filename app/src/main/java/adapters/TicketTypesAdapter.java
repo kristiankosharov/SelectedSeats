@@ -85,7 +85,7 @@ public class TicketTypesAdapter extends BaseAdapter {
         final Ticket ticket = tickets.get(position);
 
         ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(context,
-                android.R.layout.simple_spinner_item, getTypes(ticketTypes));
+                R.layout.spinner_item, getTypes(ticketTypes));
 
         holder.ticketTypesSpinner.setAdapter(dataAdapter);
 //        holder.priceForOneTicket.setText(String.valueOf(tickets.getPrice()));
@@ -98,7 +98,7 @@ public class TicketTypesAdapter extends BaseAdapter {
 
         holder.ticketTypesSpinner.setSelection(ticket.getSelectedTypePosition());
         holder.numberOfTickets.setText(String.valueOf(ticket.getSelectNumberOfTickets()));
-        holder.priceForOneTicket.setText(String.valueOf(ticketTypes.get(ticket.getSelectedTypePosition()).getTicketPrice()));
+        holder.priceForOneTicket.setText((double)ticketTypes.get(ticket.getSelectedTypePosition()).getTicketPrice() + " лв.");
         calcTotalPrice(holder, position);
 
         final ViewHolder finalHolder = holder;
@@ -187,9 +187,9 @@ public class TicketTypesAdapter extends BaseAdapter {
     }
 
     private void calcTotalPrice(ViewHolder holder, int position) {
-        int price = ticketTypes.get(tickets.get(position).getSelectedTypePosition()).getTicketPrice() * tickets.get(position).getSelectNumberOfTickets();
-        holder.priceForOneTicket.setText(String.valueOf(ticketTypes.get(tickets.get(position).getSelectedTypePosition()).getTicketPrice()));
-        holder.totalPrice.setText(String.valueOf(price));
+        double price = ticketTypes.get(tickets.get(position).getSelectedTypePosition()).getTicketPrice() * tickets.get(position).getSelectNumberOfTickets();
+        holder.priceForOneTicket.setText((double)ticketTypes.get(tickets.get(position).getSelectedTypePosition()).getTicketPrice() + " лв.");
+        holder.totalPrice.setText(price + " лв.");
     }
 
     public int getNumberOfTickets() {

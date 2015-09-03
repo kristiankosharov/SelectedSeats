@@ -16,7 +16,7 @@
                 android:id="@+id/chooser_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_margin="@dimen/margin_reservation_layout"
                 android:gravity="center">
 
                 <ListView
@@ -52,7 +52,7 @@
                 android:layout_margin="20dp"
                 android:src="@drawable/screen_image" />
 
-            <RelativeLayout
+            <!--<RelativeLayout
                 android:id="@+id/chooser"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -103,13 +103,13 @@
                     android:layout_marginTop="5dp"
                     android:text="The ticket is for invalid." />
 
-            </RelativeLayout>
+            </RelativeLayout> -->
 
             <views.SeatViewLayout
                 android:id="@+id/rl_SeatContainer"
                 android:layout_width="330dp"
                 android:layout_height="300dp"
-                android:layout_below="@+id/chooser"
+                android:layout_below="@+id/screen_image"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="5dp"
                 android:gravity="center">
@@ -207,8 +207,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/legend"
-
                 android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
                 android:text="Seats" />
 
         </RelativeLayout>

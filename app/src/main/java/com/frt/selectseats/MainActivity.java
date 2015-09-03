@@ -6,15 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.oguzdev.circularfloatingactionmenu.library.FloatingActionButton;
@@ -36,12 +33,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final String TAG = MainActivity.class.getName();
     private SeatViewLayout seatContainer;
     private int number = 1;
-    private TextView numberOfSeats;
+    //    private TextView numberOfSeats;
     private static final int NUMBERS_OF_ROWS = 10;
     private static final int NUMBER_OF_COLUMNS = 10;
     private Button selectedSeats;
-    private CheckBox checkBoxIsChild;
-    private CheckBox checkBoxIsInvalid;
+    //    private CheckBox checkBoxIsChild;
+//    private CheckBox checkBoxIsInvalid;
     private boolean isChild;
     private boolean isInvalid;
     private Spinner ticketType;
@@ -52,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private FrameLayout addNewTicketsButton;
     ArrayList<Ticket> tickets;
     ArrayList<TicketType> ticketsType;
+    private String[] types = {"2D детски", "2D пенсионер", "2D нормален", "2D студентски"};
 
 
     @Override
@@ -115,38 +113,48 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
 
-        checkBoxIsChild.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    isChild = true;
-                } else {
-                    isChild = false;
-                }
-                seatContainer.setIsForChildren(isChild);
-            }
-        });
+        seatContainer = (SeatViewLayout) findViewById(R.id.rl_SeatContainer);
+        seatContainer.setContext(this);
+        seatContainer.setSeatList(new ArrayList<Seat>(seatList));
+        seatContainer.setRows(NUMBERS_OF_ROWS);
+        seatContainer.setColumns(NUMBER_OF_COLUMNS);
+        seatContainer.setBackgroundColor(Color.TRANSPARENT);
+        seatContainer.setSeatDrawableResource(R.drawable.free_seat);
+        seatContainer.setHiredSeatDrawableResource(R.drawable.hired_seat);
+        seatContainer.setNumberOfSelectedSeats(number);
 
-        checkBoxIsInvalid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    isInvalid = true;
-                } else {
-                    isInvalid = false;
-                }
-                seatContainer.setIsForInvalid(isInvalid);
-            }
-        });
+//        checkBoxIsChild.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    isChild = true;
+//                } else {
+//                    isChild = false;
+//                }
+//                seatContainer.setIsForChildren(isChild);
+//            }
+//        });
+
+//        checkBoxIsInvalid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+//                    isInvalid = true;
+//                } else {
+//                    isInvalid = false;
+//                }
+//                seatContainer.setIsForInvalid(isInvalid);
+//            }
+//        });
 
         tickets = new ArrayList<>();
 
         ticketsType = new ArrayList<>();
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < types.length; i++) {
             TicketType ticketType = new TicketType();
-            ticketType.setTicketPrice(i);
-            ticketType.setTicketType("Type, " + i);
+            ticketType.setTicketPrice(i * 2);
+            ticketType.setTicketType(types[i]);
             ticketsType.add(ticketType);
         }
 
@@ -160,11 +168,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void initializeViews() {
-        numberOfSeats = (TextView) findViewById(R.id.number);
-        numberOfSeats.setText(String.valueOf(number));
+//        numberOfSeats = (TextView) findViewById(R.id.number);
+//        numberOfSeats.setText(String.valueOf(number));
         selectedSeats = (Button) findViewById(R.id.get_selected_seats);
-        checkBoxIsChild = (CheckBox) findViewById(R.id.checkbox_child);
-        checkBoxIsInvalid = (CheckBox) findViewById(R.id.checkbox_invalid);
+//        checkBoxIsChild = (CheckBox) findViewById(R.id.checkbox_child);
+//        checkBoxIsInvalid = (CheckBox) findViewById(R.id.checkbox_invalid);
         ticketType = (Spinner) findViewById(R.id.ticket_type);
         priceForOneTicket = (EditText) findViewById(R.id.price_for_one);
         totalPrice = (EditText) findViewById(R.id.total_price);
@@ -178,19 +186,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         params.addRule(RelativeLayout.CENTER_HORIZONTAL);
         addNewTicketsButton.setLayoutParams(params);
 
-        seatContainer = (SeatViewLayout) findViewById(R.id.rl_SeatContainer);
-        seatContainer.setContext(this);
-        seatContainer.setSeatList(new ArrayList<Seat>(seatList));
-        seatContainer.setRows(NUMBERS_OF_ROWS);
-        seatContainer.setColumns(NUMBER_OF_COLUMNS);
-        seatContainer.setBackgroundColor(Color.TRANSPARENT);
-        seatContainer.setSeatDrawableResource(R.drawable.free_seat);
-        seatContainer.setHiredSeatDrawableResource(R.drawable.hired_seat);
-        seatContainer.setNumberOfSelectedSeats(number);
 
-        checkBoxIsInvalid.setChecked(false);
-        checkBoxIsInvalid.setChecked(false);
-
+//        checkBoxIsInvalid.setChecked(false);
+//        checkBoxIsInvalid.setChecked(false);
+        selectedSeats.setOnClickListener(this);
         addNewTicketsButton.setOnClickListener(this);
     }
 
@@ -211,7 +210,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 int height = ((TicketTypesAdapter) listViewTypes.getAdapter()).getNumberOfTickets();
 
-                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height * 110);
+                int dimen = (int) getResources().getDimension(R.dimen.reservation_of_ticket_height);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height * dimen);
                 listViewTypes.setLayoutParams(params);
 
                 break;
@@ -239,7 +239,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void delete(int numberOfTickets) {
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, numberOfTickets * 110);
+
+        int dimen = (int) getResources().getDimension(R.dimen.reservation_of_ticket_height);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, numberOfTickets * dimen);
         View view = listViewTypes.getChildAt(numberOfTickets);
         listViewTypes.removeViewInLayout(view);
         listViewTypes.setLayoutParams(params);
