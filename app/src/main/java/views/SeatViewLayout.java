@@ -20,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.frt.selectseats.R;
@@ -52,6 +53,8 @@ public class SeatViewLayout extends LinearLayout {
 
     private int columns = 0;
     private int rows = 0;
+
+    ZoomView zoomView;
 
     private Canvas canvas;
     private int numberOfSelectedSeats = 0;
@@ -105,7 +108,7 @@ public class SeatViewLayout extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         if (isTablet) {
-            setMeasuredDimension((int) (330 * density), (int) (300 * density));
+            setMeasuredDimension((int) (330 * density), (int) (250 * density));
         } else {
             setMeasuredDimension((int) (220 * density), (int) (200 * density));
         }
@@ -195,12 +198,12 @@ public class SeatViewLayout extends LinearLayout {
             addSeatViews();
         }
 
-        if (zooming) {
-            matrix.reset();
-            matrix.postScale(1.7f, 1.7f, zoomPos.x + 170, zoomPos.y + 50);
-            shaderPaint.getShader().setLocalMatrix(matrix);
-            canvas.drawCircle(zoomPos.x - 50, zoomPos.y - 50, 150, shaderPaint);
-        }
+//        if (zooming) {
+//            matrix.reset();
+//            matrix.postScale(1.7f, 1.7f, zoomPos.x + 170, zoomPos.y + 50);
+//            shaderPaint.getShader().setLocalMatrix(matrix);
+//            canvas.drawCircle(zoomPos.x - 50, zoomPos.y - 50, 150, shaderPaint);
+//        }
     }
 
     private void addSeatViews() {
@@ -265,18 +268,6 @@ public class SeatViewLayout extends LinearLayout {
 
     }
 
-    private OnClickListener getSeatFocusChangeListener() {
-        OnClickListener seatListener = new OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                Log.d(TAG, "On Click Listener");
-            }
-        };
-
-        return seatListener;
-    }
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         return true;
@@ -292,12 +283,12 @@ public class SeatViewLayout extends LinearLayout {
 
         scrollView.setIsScrollable(false);
 
-        if (isFirst) {
-            shader = new BitmapShader(getBitmapFromView(this), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-            isFirst = false;
-        }
-
-        shaderPaint.setShader(shader);
+//        if (isFirst) {
+//            shader = new BitmapShader(getBitmapFromView(this), Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
+//            isFirst = false;
+//        }
+//
+//        shaderPaint.setShader(shader);
 
         if (circularBitmap != null) {
             circularBitmap.recycle();
@@ -305,10 +296,10 @@ public class SeatViewLayout extends LinearLayout {
         }
 
         Log.d("touchhhhhhhhhhhhhhhh", "touch" + zoomPos.x + "," + zoomPos.y);
-        matrix.reset();
-        matrix.postScale(1.7f, 1.7f);
-        matrix.postTranslate(-zoomPos.x, -zoomPos.y);
-        shader.setLocalMatrix(matrix);
+//        matrix.reset();
+//        matrix.postScale(1.7f, 1.7f);
+//        matrix.postTranslate(-zoomPos.x, -zoomPos.y);
+//        shader.setLocalMatrix(matrix);
 
         int action = event.getAction();
 
@@ -426,7 +417,27 @@ public class SeatViewLayout extends LinearLayout {
         view.buildDrawingCache();
 
         Bitmap bm = view.getDrawingCache();
-//        view.setBackgroundColor(Color.TRANSPARENT);
+
+        View rootView = ((Activity) context).getWindow().getDecorView().findViewById(android.R.id.content);
+        RelativeLayout zoomViewLayout = (RelativeLayout) rootView.findViewById(R.id.zoom);
+        zoomViewLayout.removeAllViews();
+        zoomView = null;
+        zoomView = new ZoomView(context, zoomPos, bm);
+        zoomViewLayout.addView(zoomView);
+
+        zoomViewLayout.setVisibility(View.VISIBLE);
+
+        Log.d(TAG, "Bitmap width: " + bm.getWidth() + " , bitmap height: " + bm.getHeight());
+
+//        if (((int) zoomPos.x + 100) <= bm.getWidth() && ((int) zoomPos.y + 100) <= bm.getHeight()) {
+//
+//            Bitmap yourBitmap = Bitmap.createBitmap(bm, (int) zoomPos.x, (int) zoomPos.y, 100, 100);
+//            Drawable drawable = new BitmapDrawable(getResources(), yourBitmap);
+//            zoomViewLayout.setBackground(drawable);
+//        }
+
+//        touch312.85712,400.81897
+        //        view.setBackgroundColor(Color.TRANSPARENT);
 
         return bm;
     }

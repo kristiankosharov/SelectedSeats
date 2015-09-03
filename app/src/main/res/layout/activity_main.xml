@@ -52,6 +52,15 @@
                 android:layout_margin="20dp"
                 android:src="@drawable/screen_image" />
 
+            <RelativeLayout
+                android:id="@+id/zoom"
+                android:layout_width="260dp"
+                android:layout_height="100dp"
+                android:layout_below="@+id/screen_image"
+                android:layout_centerHorizontal="true">
+
+            </RelativeLayout>
+
             <!--<RelativeLayout
                 android:id="@+id/chooser"
                 android:layout_width="wrap_content"
@@ -109,7 +118,7 @@
                 android:id="@+id/rl_SeatContainer"
                 android:layout_width="330dp"
                 android:layout_height="300dp"
-                android:layout_below="@+id/screen_image"
+                android:layout_below="@+id/zoom"
                 android:layout_centerInParent="true"
                 android:layout_marginTop="5dp"
                 android:gravity="center">
