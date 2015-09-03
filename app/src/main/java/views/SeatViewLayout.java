@@ -1,4 +1,4 @@
-package com.frt.selectseats;
+package views;
 
 import android.app.Activity;
 import android.content.Context;
@@ -22,8 +22,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.frt.selectseats.R;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import models.Seat;
 
 /**
  * Source:http://stackoverflow.com/questions/13864480/android-how-to-circular-zoom-magnify-part-of-image
@@ -68,6 +72,8 @@ public class SeatViewLayout extends LinearLayout {
 
     private int seatRange = 60;
     private float density;
+    private boolean isTablet;
+
 
     List<Seat> seatList = new ArrayList<Seat>();
 
@@ -76,6 +82,7 @@ public class SeatViewLayout extends LinearLayout {
         this.context = context;
         this.setOrientation(VERTICAL);
         this.setWeightSum(rows);
+        isTablet = context.getResources().getBoolean(R.bool.is_tablet);
     }
 
     public SeatViewLayout(Context context, AttributeSet attrs) {
@@ -83,19 +90,20 @@ public class SeatViewLayout extends LinearLayout {
         this.setOrientation(VERTICAL);
         this.setWeightSum(rows);
         density = context.getResources().getDisplayMetrics().density;
+        isTablet = context.getResources().getBoolean(R.bool.is_tablet);
     }
 
     public SeatViewLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs);
         this.setOrientation(VERTICAL);
         this.setWeightSum(rows);
+        isTablet = context.getResources().getBoolean(R.bool.is_tablet);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        boolean isTablet = context.getResources().getBoolean(R.bool.is_tablet);
-        Log.d(TAG, String.valueOf(isTablet));
+
         if (isTablet) {
             setMeasuredDimension((int) (330 * density), (int) (300 * density));
         } else {
@@ -236,7 +244,6 @@ public class SeatViewLayout extends LinearLayout {
         for (int k = 0; k < seatList.size(); k++) {
             if (seatList.get(k).getColumn() == columns && seatList.get(k).getRow() == rows) {
                 Seat seat = seatList.get(k);
-                Log.d(TAG, "Seat state: " + seat.getState());
                 if (seat.getState() == Seat.FREE_SEAT) {
                     if (seatDrawableResource != -1 && seatDrawableResource != 0) {
                         seatView.setBackgroundResource(seatDrawableResource);

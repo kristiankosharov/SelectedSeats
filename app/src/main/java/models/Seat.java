@@ -1,4 +1,4 @@
-package com.frt.selectseats;
+package models;
 
 public class Seat {
 

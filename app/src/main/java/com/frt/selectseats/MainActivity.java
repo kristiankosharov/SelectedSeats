@@ -3,12 +3,17 @@ package com.frt.selectseats;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,12 +24,17 @@ import com.oguzdev.circularfloatingactionmenu.library.SubActionButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+import adapters.TicketTypesAdapter;
+import interfaces.DeleteTicket;
+import models.Seat;
+import models.Ticket;
+import models.TicketType;
+import views.SeatViewLayout;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, DeleteTicket {
 
     private static final String TAG = MainActivity.class.getName();
     private SeatViewLayout seatContainer;
-    private Button arrowDown;
-    private Button arrowUp;
     private int number = 1;
     private TextView numberOfSeats;
     private static final int NUMBERS_OF_ROWS = 10;
@@ -34,34 +44,27 @@ public class MainActivity extends AppCompatActivity {
     private CheckBox checkBoxIsInvalid;
     private boolean isChild;
     private boolean isInvalid;
-    private ImageView floatingActionButton;
+    private Spinner ticketType;
+    private EditText priceForOneTicket;
+    private EditText totalPrice;
+    private List<Seat> seatList;
+    private ListView listViewTypes;
+    private FrameLayout addNewTicketsButton;
+    ArrayList<Ticket> tickets;
+    ArrayList<TicketType> ticketsType;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final List<Seat> seatList = new ArrayList<Seat>();
+        seatList = new ArrayList<Seat>();
 
-        arrowDown = (Button) findViewById(R.id.button_down);
-        arrowUp = (Button) findViewById(R.id.button_up);
-        numberOfSeats = (TextView) findViewById(R.id.number);
-        numberOfSeats.setText(String.valueOf(number));
-        selectedSeats = (Button) findViewById(R.id.get_selected_seats);
-        checkBoxIsChild = (CheckBox) findViewById(R.id.checkbox_child);
-        checkBoxIsInvalid = (CheckBox) findViewById(R.id.checkbox_invalid);
-
+        initializeViews();
         ImageView floatingActionButton = new ImageView(this);
         floatingActionButton.setImageResource(R.drawable.settings);
 
         FloatingActionButton actionButton = new FloatingActionButton.Builder(this).setContentView(floatingActionButton).setBackgroundDrawable(R.drawable.button_action_blue).setPosition(FloatingActionButton.POSITION_BOTTOM_RIGHT).build();
-
-//        FloatingActionButton.LayoutParams params = new FloatingActionButton.LayoutParams(FloatingActionButton.LayoutParams.WRAP_CONTENT, FloatingActionButton.LayoutParams.WRAP_CONTENT);
-//        params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-//        params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//        params.setMargins(10, 10, 10, 10);
-//
-//        actionButton.setLayoutParams(params);
 
         SubActionButton.Builder itemBuilder = new SubActionButton.Builder(this);
         ImageView imageView1 = new ImageView(this);
@@ -80,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
                 .attachTo(actionButton)
                 .build();
 
-
         for (int i = 0; i < NUMBERS_OF_ROWS; i++) {
             for (int j = 0; j < NUMBER_OF_COLUMNS; j++) {
                 Seat s = new Seat();
@@ -92,6 +94,8 @@ public class MainActivity extends AppCompatActivity {
 
                 if (i == 4) {
                     s.setState(Seat.INVISIBLE_SEAT);
+                    s.setRow(-1);
+                    s.setColumn(-1);
                 }
 
                 if ((i == 3 && j == 3) || (i == 3 && j == 4) || (i == 7 && j == 4) || (i == 7 && j == 5) || (i == 7 && j == 6)) {
@@ -104,71 +108,12 @@ public class MainActivity extends AppCompatActivity {
 
                 if (i == 1) {
                     s.setState(Seat.CHILDREN_SEAT);
+
                 }
 
                 seatList.add(s);
             }
         }
-
-        seatContainer = (SeatViewLayout) findViewById(R.id.rl_SeatContainer);
-        seatContainer.setContext(this);
-        seatContainer.setSeatList(new ArrayList<Seat>(seatList));
-        seatContainer.setRows(NUMBERS_OF_ROWS);
-        seatContainer.setColumns(NUMBER_OF_COLUMNS);
-        seatContainer.setBackgroundColor(Color.TRANSPARENT);
-        seatContainer.setSeatDrawableResource(R.drawable.free_seat);
-        seatContainer.setHiredSeatDrawableResource(R.drawable.hired_seat);
-        seatContainer.setNumberOfSelectedSeats(number);
-
-        checkBoxIsInvalid.setChecked(false);
-        checkBoxIsInvalid.setChecked(false);
-
-        arrowDown.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (number < 2) {
-                    return;
-                }
-                number--;
-                numberOfSeats.setText(String.valueOf(number));
-                seatContainer.setNumberOfSelectedSeats(number);
-                seatContainer.dispatchTouchEvent(MotionEvent.obtain(10, 10, MotionEvent.ACTION_MOVE, 450, 100, 0));
-
-            }
-        });
-
-        arrowUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if (number > NUMBER_OF_COLUMNS - 1) {
-                    return;
-                }
-                number++;
-                numberOfSeats.setText(String.valueOf(number));
-                seatContainer.setNumberOfSelectedSeats(number);
-                seatContainer.dispatchTouchEvent(MotionEvent.obtain(10, 10, MotionEvent.ACTION_MOVE, 450, 100, 0));
-            }
-        });
-
-        selectedSeats.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ArrayList<Seat> selectedSeats = new ArrayList<Seat>();
-                for (int i = 0; i < seatList.size(); i++) {
-                    if (seatList.get(i).isSelected()) {
-                        selectedSeats.add(seatList.get(i));
-                        if (seatList.get(i).isOverHiredSeat()) {
-                            Toast.makeText(MainActivity.this, "No way, some of seats were hired!", Toast.LENGTH_LONG).show();
-                            return;
-                        }
-                    }
-                }
-
-                Toast.makeText(MainActivity.this, selectedSeats.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
 
         checkBoxIsChild.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -193,16 +138,110 @@ public class MainActivity extends AppCompatActivity {
                 seatContainer.setIsForInvalid(isInvalid);
             }
         });
+
+        tickets = new ArrayList<>();
+
+        ticketsType = new ArrayList<>();
+
+        for (int i = 0; i < 5; i++) {
+            TicketType ticketType = new TicketType();
+            ticketType.setTicketPrice(i);
+            ticketType.setTicketType("Type, " + i);
+            ticketsType.add(ticketType);
+        }
+
+        Ticket ticket = new Ticket();
+        ticket.setTicketTypes(ticketsType);
+        tickets.add(ticket);
+
+        TicketTypesAdapter adapter = new TicketTypesAdapter(this, tickets);
+        listViewTypes.setAdapter(adapter);
+
     }
 
-    private View.OnTouchListener listener(final Seat s) {
-        View.OnTouchListener listener = new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                s.setState(1);
-                return true;
+    private void initializeViews() {
+        numberOfSeats = (TextView) findViewById(R.id.number);
+        numberOfSeats.setText(String.valueOf(number));
+        selectedSeats = (Button) findViewById(R.id.get_selected_seats);
+        checkBoxIsChild = (CheckBox) findViewById(R.id.checkbox_child);
+        checkBoxIsInvalid = (CheckBox) findViewById(R.id.checkbox_invalid);
+        ticketType = (Spinner) findViewById(R.id.ticket_type);
+        priceForOneTicket = (EditText) findViewById(R.id.price_for_one);
+        totalPrice = (EditText) findViewById(R.id.total_price);
+        listViewTypes = (ListView) findViewById(R.id.list_view_ticket_type);
+        addNewTicketsButton = (FrameLayout) findViewById(R.id.add_new_ticket);
+
+        int size =
+                getResources().getDimensionPixelSize(com.oguzdev.circularfloatingactionmenu.library.R.dimen.action_button_size);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(size, size);
+        params.addRule(RelativeLayout.BELOW, listViewTypes.getId());
+        params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        addNewTicketsButton.setLayoutParams(params);
+
+        seatContainer = (SeatViewLayout) findViewById(R.id.rl_SeatContainer);
+        seatContainer.setContext(this);
+        seatContainer.setSeatList(new ArrayList<Seat>(seatList));
+        seatContainer.setRows(NUMBERS_OF_ROWS);
+        seatContainer.setColumns(NUMBER_OF_COLUMNS);
+        seatContainer.setBackgroundColor(Color.TRANSPARENT);
+        seatContainer.setSeatDrawableResource(R.drawable.free_seat);
+        seatContainer.setHiredSeatDrawableResource(R.drawable.hired_seat);
+        seatContainer.setNumberOfSelectedSeats(number);
+
+        checkBoxIsInvalid.setChecked(false);
+        checkBoxIsInvalid.setChecked(false);
+
+        addNewTicketsButton.setOnClickListener(this);
+    }
+
+    @Override
+    public void onClick(View v) {
+        int viewId = v.getId();
+
+        switch (viewId) {
+            case R.id.get_selected_seats:
+                getSelectedSeats();
+                break;
+            case R.id.add_new_ticket:
+
+                Ticket ticket = new Ticket();
+                ticket.setTicketTypes(ticketsType);
+
+                ((TicketTypesAdapter) listViewTypes.getAdapter()).addNewTicket(ticket);
+
+                int height = ((TicketTypesAdapter) listViewTypes.getAdapter()).getNumberOfTickets();
+
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height * 110);
+                listViewTypes.setLayoutParams(params);
+
+                break;
+        }
+    }
+
+
+    private ArrayList<Seat> getSelectedSeats() {
+        ArrayList<Seat> selectedSeats = new ArrayList<Seat>();
+        for (int i = 0; i < seatList.size(); i++) {
+            if (seatList.get(i).isSelected()) {
+                selectedSeats.add(seatList.get(i));
+                if (seatList.get(i).isOverHiredSeat()) {
+                    Toast.makeText(MainActivity.this, "No way, some of seats were hired!", Toast.LENGTH_LONG).show();
+                    return null;
+                }
             }
-        };
-        return listener;
+        }
+
+        Toast.makeText(MainActivity.this, selectedSeats.toString(), Toast.LENGTH_LONG).show();
+
+        return selectedSeats;
+    }
+
+
+    @Override
+    public void delete(int numberOfTickets) {
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, numberOfTickets * 110);
+        View view = listViewTypes.getChildAt(numberOfTickets);
+        listViewTypes.removeViewInLayout(view);
+        listViewTypes.setLayoutParams(params);
     }
 }

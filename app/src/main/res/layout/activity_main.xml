@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.frt.selectseats.CustomScrollView
+    <views.CustomScrollView
         android:id="@+id/scroll_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -12,10 +12,43 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <RelativeLayout
+                android:id="@+id/chooser_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="center">
+
+                <ListView
+                    android:id="@+id/list_view_ticket_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:animateLayoutChanges="true"></ListView>
+
+                <FrameLayout
+                    android:id="@+id/add_new_ticket"
+                    android:layout_width="@dimen/action_button_size"
+                    android:layout_height="@dimen/action_button_size"
+                    android:layout_below="@+id/list_view_ticket_type"
+                    android:layout_margin="6dp"
+                    android:background="@drawable/button_action_blue"
+                    android:clickable="true">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="20dp"
+                        android:src="@drawable/plus" />
+
+                </FrameLayout>
+
+            </RelativeLayout>
+
             <ImageView
                 android:id="@+id/screen_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/chooser_layout"
                 android:layout_margin="20dp"
                 android:src="@drawable/screen_image" />
 
@@ -72,7 +105,7 @@
 
             </RelativeLayout>
 
-            <com.frt.selectseats.SeatViewLayout
+            <views.SeatViewLayout
                 android:id="@+id/rl_SeatContainer"
                 android:layout_width="330dp"
                 android:layout_height="300dp"
@@ -81,7 +114,7 @@
                 android:layout_marginTop="5dp"
                 android:gravity="center">
 
-            </com.frt.selectseats.SeatViewLayout>
+            </views.SeatViewLayout>
 
             <RelativeLayout
                 android:id="@+id/legend"
@@ -97,6 +130,7 @@
                     android:src="@drawable/invalid_seat_empty" />
 
                 <TextView
+                    android:id="@+id/invalid_seat_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/invalid_seat_image"
@@ -110,10 +144,12 @@
                     android:id="@+id/children_seat_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/invalid_seat_image"
+                    android:layout_marginLeft="10dp"
+                    android:layout_toRightOf="@+id/invalid_seat_label"
                     android:src="@drawable/children_seat_empty" />
 
                 <TextView
+                    android:id="@+id/children_seat_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/children_seat_image"
@@ -133,6 +169,7 @@
                     android:src="@drawable/hired_seat" />
 
                 <TextView
+                    android:id="@+id/hired_seat_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/hired_seat_image"
@@ -147,7 +184,9 @@
                     android:id="@+id/free_seat_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/hired_seat_image"
+                    android:layout_alignLeft="@+id/children_seat_image"
+                    android:layout_below="@+id/children_seat_label"
+                    android:layout_toRightOf="@+id/hired_seat_label"
                     android:src="@drawable/free_seat" />
 
                 <TextView
@@ -173,5 +212,5 @@
                 android:text="Seats" />
 
         </RelativeLayout>
-    </com.frt.selectseats.CustomScrollView>
+    </views.CustomScrollView>
 </RelativeLayout>
